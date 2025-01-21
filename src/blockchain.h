@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>  // Include for size_t
 
 #define HASH_SIZE 65
 #define MAX_TRANSACTIONS 15
@@ -33,7 +34,10 @@ Blockchain *create_blockchain();
 Block create_genesis_block();
 Block create_block(Blockchain *blockchain, Transaction transactions[], int count);
 bool add_block(Blockchain *blockchain, Block new_block);
-void calculate_sha256(char *str, unsigned char hash[HASH_SIZE]);
+bool validate_blockchain(Blockchain *blockchain);
+void hash_block(const Block *block, char output[HASH_SIZE]);
+void calculate_sha256(const char *str, unsigned char hash[HASH_SIZE]);
 void print_hash(unsigned char hash[HASH_SIZE]);
+void free_blockchain(Blockchain *blockchain);
 
 #endif
