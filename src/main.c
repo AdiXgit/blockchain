@@ -1,28 +1,17 @@
 #include "blockchain.h"
-#include "p2p.h"
-#include "sha256.h"
 #include <stdio.h>
 
 int main() {
     Blockchain *blockchain = create_blockchain();
 
-    // Add a transaction
-    Transaction tx = {"Alice", "Bob", 10.0};
-    Block new_block = create_block(blockchain, &tx, 1);
-    add_block(blockchain, new_block);
+    Block block1 = create_block(blockchain, "Alice pays Bob 5 BTC");
+    add_block(blockchain, block1);
 
-    // Validate the blockchain
-    if (validate_blockchain(blockchain)) {
-        printf("Blockchain is valid.\n");
-    } else {
-        printf("Blockchain is invalid.\n");
-    }
+    Block block2 = create_block(blockchain, "Bob pays Charlie 3 BTC");
+    add_block(blockchain, block2);
 
-    // Start the P2P network
-    start_p2p_server();
+    print_blockchain(blockchain);
 
-    // Free the blockchain
     free_blockchain(blockchain);
-
     return 0;
 }
