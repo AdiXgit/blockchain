@@ -5,12 +5,15 @@
 
 #define MAX_DATA_SIZE 256
 #define HASH_SIZE 65
+#include <time.h>
 
 typedef struct Block {
     int index;
-    char data[MAX_DATA_SIZE];
-    char prev_hash[HASH_SIZE];
-    char hash[HASH_SIZE];
+    time_t timestamp;
+    char data[256];
+    char prev_hash[65];
+    char hash[65];
+    int nonce; 
     struct Block *next;
 } Block;
 
@@ -21,7 +24,7 @@ typedef struct {
 } Blockchain;
 
 Blockchain *create_blockchain();
-Block create_block(Blockchain *blockchain, const char *data);
+Block create_block(Block *prev, const char *data);
 bool add_block(Blockchain *blockchain, Block new_block);
 void print_blockchain(const Blockchain *blockchain);
 void free_blockchain(Blockchain *blockchain);

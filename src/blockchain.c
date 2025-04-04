@@ -3,6 +3,9 @@
 #include <string.h>
 #include "blockchain.h"
 #include "sha256.h"
+#include <time.h>
+#include "pow.h"
+
 
 void calculate_hash(const Block *block, char output_hash[HASH_SIZE]) {
     char input[1024];
@@ -20,24 +23,17 @@ void calculate_hash(const Block *block, char output_hash[HASH_SIZE]) {
     output_hash[64] = '\0';
 }
 
-Block create_block(Blockchain *blockchain, const char *data) {
-    Block block;
-    block.index = blockchain->size;
-    strncpy(block.data, data, MAX_DATA_SIZE - 1);
-    block.data[MAX_DATA_SIZE - 1] = '\0';
+Block create_block(Block *prev, const char *data) {
+    Block new_block;
+    new_block.index = prev->index + 1;
+    new_block.timestamp = time(NULL);
+    strncpy(new_block.data, data, sizeof(new_block.data));
+    strncpy(new_block.prev_hash, prev->hash, sizeof(new_block.prev_hash));
+    new_block.nonce = 0;
 
-    if (blockchain->tail != NULL) {
-        strncpy(block.prev_hash, blockchain->tail->hash, HASH_SIZE);
-    } else {
-        memset(block.prev_hash, '0', HASH_SIZE - 1);
-        block.prev_hash[HASH_SIZE - 1] = '\0';
-    }
-
-    calculate_hash(&block, block.hash);
-    block.next = NULL;
-    return block;
+    mine_block(&new_block);  
+    return new_block;
 }
-
 Blockchain *create_blockchain() {
     Blockchain *blockchain = (Blockchain*)malloc(sizeof(Blockchain));
     blockchain->head = NULL;
